@@ -8,12 +8,14 @@ Author: Nichlas Dam
 Author URI: http://www.nichlasdam.dk
 License: 
 */
+require 'average_reading_time_options.php';
 
 function estimate() {
+    $wpm = get_option("Words_per_minute");
     global $post;
     $mycontent = $post->post_content; 
     $words = str_word_count(strip_tags($mycontent));
-    $minutes = floor($words / 200);
+    $minutes = floor($words / $wpm['Words_per_minute'] );
     $est = $minutes . ' minute' . ($minutes == 1 ? '' : 's');
     return $est;
 }
