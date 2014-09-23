@@ -35,8 +35,9 @@ class MySettingsPage
      */
     public function create_admin_page()
     {
+        
         // Set class property
-        $this->options = get_option( 'Words_per_minute' );
+        $this->options = get_option( 'Words_per_minute', 250 );
         ?>
         <div class="wrap">
             <?php screen_icon(); ?>
@@ -57,7 +58,11 @@ class MySettingsPage
      * Register and add settings
      */
     public function page_init()
-    {        
+    {    
+        $example_array = array('Words_per_minute' => 250);
+        if ($this->options['Words_per_minute'] == false OR $this->options['Words_per_minute'] == 0) {
+               update_option('Words_per_minute',  $example_array);
+        }
         register_setting(
             'average_reading_time', // Option group
             'words_per_minute', // Option name
@@ -88,9 +93,12 @@ class MySettingsPage
     public function sanitize( $input )
     {
         $new_input = array();
-        if( isset( $input['Words_per_minute'] ) )
+        if( isset( $input['Words_per_minute'] ) ) {
             $new_input['Words_per_minute'] = absint( $input['Words_per_minute'] );
-
+        }
+        else {
+            $new_input['Words_per_minute'] = 250;   
+        }
         return $new_input;
     }
 
@@ -112,9 +120,7 @@ class MySettingsPage
             isset( $this->options['Words_per_minute'] ) ? esc_attr( $this->options['Words_per_minute']) : ''
         );
     }
-    public function get_word_count() {
-        return get_option( 'Words_per_minute' ); 
-    }
+
 }
 
 if( is_admin() )
